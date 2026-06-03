@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { useModeStore } from "@/store/modeStore";
 import { usePageStore } from "@/store/pageStore";
 import { fileToBase64, validateFile } from "@/lib/media";
+import { MediaLightbox } from "@/components/shared/MediaLightbox";
 import type { BentoBlock, BentoPageContent } from "@/types";
 
 interface Props {
@@ -17,6 +18,7 @@ export function ImageBlock({ block, pageId }: Props) {
   const page = usePageStore((s) => s.pages.find((p) => p.id === pageId));
   const inputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   const content = block.content as { src: string; alt?: string; caption?: string };
   const hasImage = content.src && content.src.startsWith("data:image");
@@ -91,13 +93,21 @@ export function ImageBlock({ block, pageId }: Props) {
       <img
         src={content.src}
         alt={content.alt ?? ""}
-        className="w-full h-full object-cover"
+        className={`w-full h-full object-cover ${mode === "view" ? "cursor-pointer" : ""}`}
         loading="lazy"
+        onClick={() => mode === "view" && setLightboxOpen(true)}
       />
       {content.caption && mode === "view" && (
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-3">
           <span className="text-white text-xs">{content.caption}</span>
         </div>
+      )}
+      {lightboxOpen && (
+        <MediaLightbox
+          src={content.src}
+          type="image"
+          onClose={() => setLightboxOpen(false)}
+        />
       )}
     </div>
   );

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { usePageStore } from "@/store/pageStore";
 import { useModeStore } from "@/store/modeStore";
 import { DataManager } from "@/components/shared/DataManager";
-import type { Page, TreeNode } from "@/types";
+import type { Page, TreeNode, PageType } from "@/types";
 import {
   DndContext,
   DragOverlay,
@@ -83,9 +83,6 @@ function SortableTreeNodeItem({
           </svg>
         </button>
 
-        <span className="text-base shrink-0">
-          {node.page.icon ?? (node.page.type === "bento" ? "▦" : "📄")}
-        </span>
         <span className="truncate flex-1">{node.page.title}</span>
 
         {/* Context menu trigger */}
@@ -142,6 +139,18 @@ function SortableTreeNodeItem({
               >
                 ✏️ Переименовать
               </button>
+              <button
+                className="w-full text-left px-3 py-1.5 text-sm text-zinc-700 hover:bg-zinc-50"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  usePageStore.getState().switchPageType(node.page.id);
+                  setMenuOpen(false);
+                }}
+              >
+                🔄 Переключить тип (
+                {node.page.type === "bento" ? "Notion" : "Bento"})
+              </button>
+              <div className="border-t border-zinc-100 my-1" />
               <button
                 className="w-full text-left px-3 py-1.5 text-sm text-red-600 hover:bg-red-50"
                 onClick={(e) => {
@@ -234,8 +243,6 @@ export function Sidebar() {
   const rootIds = tree.map((n) => n.page.id);
   const activeNode = activeId ? pages.find((p) => p.id === activeId) : null;
 
-  if (mode === "view") return null;
-
   return (
     <aside className="w-[var(--sidebar-width)] border-r border-zinc-100 bg-white flex flex-col shrink-0">
       {/* Header */}
@@ -277,9 +284,6 @@ export function Sidebar() {
           <DragOverlay>
             {activeNode ? (
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm bg-white shadow-lg border border-zinc-200">
-                <span className="text-base">
-                  {activeNode.icon ?? (activeNode.type === "bento" ? "▦" : "📄")}
-                </span>
                 <span className="truncate">{activeNode.title}</span>
               </div>
             ) : null}

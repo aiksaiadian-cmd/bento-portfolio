@@ -5,6 +5,7 @@ import { usePageStore } from "@/store/pageStore";
 import { useModeStore } from "@/store/modeStore";
 import { Sidebar } from "./Sidebar";
 import { ModeToggle } from "./ModeToggle";
+import { HeaderTools } from "./HeaderTools";
 import { PageRenderer } from "@/components/view/PageRenderer";
 
 export function AppShell() {
@@ -36,15 +37,18 @@ export function AppShell() {
     <div className="flex h-screen w-screen overflow-hidden bg-zinc-50">
       <Sidebar />
       <main className="flex-1 flex flex-col min-w-0">
-        <header className="h-12 flex items-center justify-end gap-3 px-4 border-b border-zinc-100 shrink-0">
-          <span
-            className={`text-[10px] transition-opacity ${
-              saved ? "opacity-0" : "opacity-100 text-zinc-400"
-            }`}
-          >
-            Unsaved changes
-          </span>
-          <ModeToggle />
+        <header className="h-12 flex items-center justify-between gap-3 px-4 border-b border-zinc-100 shrink-0">
+          <HeaderTools />
+          <div className="flex items-center gap-3">
+            <span
+              className={`text-[10px] transition-opacity ${
+                saved ? "opacity-0" : "opacity-100 text-zinc-400"
+              }`}
+            >
+              Unsaved changes
+            </span>
+            <ModeToggle />
+          </div>
         </header>
         <div
           className={`flex-1 overflow-auto p-6 ${

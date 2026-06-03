@@ -7,13 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "jest"
+    "test": "jest",
+    "publish": "npm run build && echo 'Site compiled to ./dist/ — upload this folder to any static hosting'"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
-    "@heroicons/react": "^2.2.0",
     "@tiptap/extension-code": "^3.24.0",
     "@tiptap/extension-image": "^3.24.0",
     "@tiptap/extension-link": "^3.24.0",

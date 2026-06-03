@@ -1,5 +1,14 @@
 import { create } from "zustand";
-import type { Page, PageType, TreeNode } from "@/types";
+import type {
+  Page,
+  PageType,
+  TreeNode,
+  BentoPageContent,
+  NotionPageContent,
+  BentoBlock,
+  BentoLayoutItem,
+  TextContent,
+} from "@/types";
 import { generateId } from "@/lib/helpers";
 import * as storage from "@/lib/storage";
 
@@ -15,6 +24,7 @@ interface PageStore {
   setCurrentPage: (id: string) => void;
   getCurrentPage: () => Page | null;
   getTree: () => TreeNode[];
+  switchPageType: (id: string) => void;
   uploadMedia: (file: File) => Promise<string>;
   getMediaUrl: (mediaId: string) => string | null;
   init: () => void;
@@ -122,6 +132,81 @@ export const usePageStore = create<PageStore>((set, get) => ({
 
   getTree: () => {
     return get().tree;
+  },
+
+  switchPageType: (id: string) => {
+    const page = get().pages.find((p) => p.id === id);
+    if (!page) return;
+
+    const newType: PageType = page.type === "bento" ? "notion" : "bento";
+    let newContent: BentoPageContent | NotionPageContent;
+
+    if (newType === "notion") {
+      // Bento → Notion: extract text content into HTML
+      const bentoContent = page.content as BentoPageContent;
+      const textBlocks = Object.values(bentoContent.blocks).filter(
+        (b) => b.type === "text"
+      );
+      const htmlParts = textBlocks.map((b) => {
+        const html = (b.content as TextContent).html || "";
+        return html;
+      });
+      const combinedHtml = htmlParts.join("<br/><br/>");
+      newContent = {
+        type: "notion",
+        title: page.title,
+        blocks: [],
+        html: combinedHtml || "",
+      };
+    } else {
+      // Notion → Bento: create 4×4 sections with 2×2 grid and put content in sections
+      const gridSize = 4;
+      const itemsPerRow = 2;
+      const layout: BentoLayoutItem[] = [];
+      const blocks: Record<string, BentoBlock> = {};
+      const notionContent = page.content as NotionPageContent;
+
+      for (let i = 0; i < gridSize; i++) {
+        const id = generateId();
+        const row = Math.floor(i / itemsPerRow);
+        const col = i % itemsPerRow;
+        layout.push({ i: id, x: col * 2, y: row * 2, w: 2, h: 2 });
+        blocks[id] = {
+          id,
+          type: "text",
+          content: { html: "" },
+        };
+      }
+
+      // Distribute notion HTML into sections evenly
+      if (notionContent.html) {
+        const html = notionContent.html;
+        const blockIds = Object.keys(blocks);
+        const chunkSize = Math.ceil(html.length / blockIds.length);
+        blockIds.forEach((bid, idx) => {
+          const start = idx * chunkSize;
+          const chunk = html.slice(start, start + chunkSize);
+          (blocks[bid].content as TextContent).html = chunk;
+        });
+      }
+
+      newContent = {
+        type: "bento",
+        layout,
+        blocks,
+      };
+    }
+
+    const updatedPage = {
+      ...page,
+      type: newType,
+      content: newContent,
+      updatedAt: Date.now(),
+    };
+
+    storage.savePage(updatedPage);
+    const pages = get().pages.map((p) => (p.id === id ? updatedPage : p));
+    set({ pages, tree: buildTree(pages) });
   },
 
   uploadMedia: async (file: File) => {

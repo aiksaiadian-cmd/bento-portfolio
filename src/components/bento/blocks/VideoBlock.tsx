@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { useModeStore } from "@/store/modeStore";
 import { usePageStore } from "@/store/pageStore";
 import { fileToBase64, validateFile } from "@/lib/media";
+import { MediaLightbox } from "@/components/shared/MediaLightbox";
 import type { BentoBlock, BentoPageContent } from "@/types";
 
 interface Props {
@@ -17,6 +18,7 @@ export function VideoBlock({ block, pageId }: Props) {
   const page = usePageStore((s) => s.pages.find((p) => p.id === pageId));
   const inputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   const content = block.content as { src: string; caption?: string };
   const hasVideo = content.src && (content.src.startsWith("data:video") || content.src.includes("youtube.com") || content.src.includes("vimeo.com"));
@@ -141,10 +143,18 @@ export function VideoBlock({ block, pageId }: Props) {
     <div className="relative h-full">
       <video
         src={content.src}
-        className="w-full h-full object-contain bg-black"
+        className={`w-full h-full object-contain bg-black ${mode === "view" ? "cursor-pointer" : ""}`}
         controls
         preload="metadata"
+        onClick={() => mode === "view" && setLightboxOpen(true)}
       />
+      {lightboxOpen && (
+        <MediaLightbox
+          src={content.src}
+          type="video"
+          onClose={() => setLightboxOpen(false)}
+        />
+      )}
     </div>
   );
 }

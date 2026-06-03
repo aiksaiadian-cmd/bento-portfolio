@@ -5,10 +5,9 @@ import "react-grid-layout/css/styles.css";
 import { usePageStore } from "@/store/pageStore";
 import { useModeStore } from "@/store/modeStore";
 import { BentoBlockWrapper } from "./BentoBlockWrapper";
-import { AddBlockFAB } from "./AddBlockFAB";
 import type { BentoPageContent } from "@/types";
 
-const ROW_HEIGHT = 120;
+const ROW_HEIGHT = 60;
 const COLS = 4;
 
 export function BentoGrid() {
@@ -70,8 +69,6 @@ export function BentoGrid() {
           );
         })}
       </GridLayout>
-
-      {mode === "edit" && <AddBlockFAB />}
     </div>
   );
 }

@@ -17,7 +17,6 @@ export function PageRenderer() {
       {/* Page title */}
       <div className="mb-6">
         <div className="flex items-center gap-2">
-          <span className="text-2xl">{page.icon ?? (page.type === "bento" ? "▦" : "📄")}</span>
           <input
             type="text"
             value={page.title}
