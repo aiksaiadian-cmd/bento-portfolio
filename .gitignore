@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# screencasts (generated demo videos)
+/screencasts/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

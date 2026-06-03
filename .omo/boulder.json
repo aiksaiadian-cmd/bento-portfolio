@@ -1,0 +1,35 @@
+{
+  "schema_version": 2,
+  "active_work_id": "bento-portfolio-builder-f01beef0",
+  "works": {
+    "bento-portfolio-builder-f01beef0": {
+      "work_id": "bento-portfolio-builder-f01beef0",
+      "active_plan": "/Users/ekaterinaplohotnikova/Downloads/Bento constructor/.omo/plans/bento-portfolio-builder.md",
+      "plan_name": "bento-portfolio-builder",
+      "status": "active",
+      "started_at": "2026-06-02T12:14:48.979Z",
+      "updated_at": "2026-06-02T12:14:48.979Z",
+      "session_ids": [
+        "ses_1788e2599ffeKzYuB5PoyI9XiX"
+      ],
+      "session_origins": {
+        "ses_1788e2599ffeKzYuB5PoyI9XiX": "direct"
+      },
+      "agent": "sisyphus",
+      "task_sessions": {}
+    }
+  },
+  "active_plan": "/Users/ekaterinaplohotnikova/Downloads/Bento constructor/.omo/plans/bento-portfolio-builder.md",
+  "started_at": "2026-06-02T12:14:48.979Z",
+  "status": "active",
+  "updated_at": "2026-06-02T12:14:48.979Z",
+  "session_ids": [
+    "ses_1788e2599ffeKzYuB5PoyI9XiX"
+  ],
+  "session_origins": {
+    "ses_1788e2599ffeKzYuB5PoyI9XiX": "direct"
+  },
+  "plan_name": "bento-portfolio-builder",
+  "task_sessions": {},
+  "agent": "sisyphus"
+}
