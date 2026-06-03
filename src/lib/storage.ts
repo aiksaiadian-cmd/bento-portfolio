@@ -18,9 +18,19 @@ function load(): StorageData {
   }
 }
 
-function save(data: StorageData): void {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+function save(data: StorageData): boolean {
+  if (typeof window === "undefined") return true;
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    return true;
+  } catch (e: unknown) {
+    if (e instanceof DOMException && e.name === "QuotaExceededError") {
+      console.warn("Storage quota exceeded. Try exporting and clearing old data.");
+    } else {
+      console.error("Failed to save data:", e);
+    }
+    return false;
+  }
 }
 
 export function getAllPages(): Page[] {
